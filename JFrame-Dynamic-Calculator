@@ -1,0 +1,899 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.HashSet;
+import java.util.Set;
+
+public class FrameProBasicCalculator implements ActionListener
+{
+    Frame jf;
+    Toolkit tk;
+    Dimension dim;
+    int wid,hght;
+    JTextField tf;
+    Font font;
+    JButton jone,jtwo,jthree,jfour,jfive,jsix,jseven,jeight,jnine,jzero,jdoublezero,jdot;
+    JButton jplus,jminus,jmul,jdiv,jrem,jper,jequal,jclear,jback,jsquar2,jsquare3,jsqroot2,jsqrt3;
+    String res="";
+    Set<String> operator  = new HashSet<>(Set.of("+","-","*","/","%","=","^2","^3","^","⌫","√","∛"));
+    Set<String> operateSym  = new HashSet<>(Set.of("+","-","*","/","%","^2","^3","^"));
+    int count=0;
+    int width=50;
+    boolean clear = false;
+    boolean isMin=false;
+    int count1=1;
+    FrameProBasicCalculator()
+    {
+        jf = new Frame();
+        jf.setTitle("Basic Calculator");
+        tk = Toolkit.getDefaultToolkit();
+        dim=tk.getScreenSize();
+        wid=(int)dim.getWidth();
+        hght=(int)dim.getHeight();
+        jf.setSize(540,520);
+        jf.setLayout(null);
+        jf.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                jf.dispose();
+            }
+        });
+//        jf.addWindowStateListener(new WindowStateListener() {
+//            @Override
+//            public void windowStateChanged(WindowEvent e) {
+//                if(isMin)
+//                    return;
+//                if (width == 50) {
+//                    isMin=true;
+//                    jf.setSize(wid, hght);
+//                    width = 500;
+//                    isMin=false;
+//                } else {
+//                    isMin=true;
+//                    jf.setSize(500, 500);
+//                    width = 50;
+//                    isMin=false;
+//                }
+//            }
+//        });
+        jf.setMinimumSize(new Dimension(400,400));
+        font = new Font("SERIF",Font.PLAIN,30);
+        //jf.setResizable(true);
+        tf= new JTextField();
+        tf.setBounds(40,40,450,100);
+        tf.setHorizontalAlignment(JTextField.RIGHT);
+        tf.setFont(font);
+        jf.add(tf);
+        tf.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+//                count1++;
+                char c = e.getKeyChar();
+                if(!Character.isDigit(c) &&
+                        c != KeyEvent.VK_BACK_SPACE && c!=KeyEvent.VK_ENTER && c != KeyEvent.VK_DELETE && c!='+' && c!='-' && c!='*' && c!='/' && c!='%' && c!='^')
+                {
+                    e.consume();
+                }
+                if(c=='.')
+                {
+                    JOptionPane.showMessageDialog(null,"Please use a button for this. We have not initialized the process; it is currently running. I am currently working on this.");
+                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(clear && !(e.getKeyChar()=='+'||e.getKeyChar()=='-'||e.getKeyChar()=='*'||e.getKeyChar()=='/'||e.getKeyChar()=='%'||e.getKeyChar()=='^'))
+                {
+                    tf.setText("");
+                    clear = false;
+                }
+                else
+                    clear =false;
+                res=tf.getText();
+                String cb ="";
+                if(!res.isEmpty())
+                {
+                    cb = ""+res.charAt(res.length()-1);
+                    if(e.getKeyChar()=='+')
+                    {
+                        if(operator.contains(cb))
+                        {
+                            res=res.substring(0,res.length()-1);
+                            //System.out.println(res);
+                            tf.setText(res);
+                        }
+                        else
+                        {
+                            res+='+';
+                            count++;
+                        }
+                        if(count==2)
+                        {
+                            res=calculation(res.substring(0,res.length()-1));
+                            tf.setText(res);
+                            count=1;
+                        }
+                    }
+                    if(e.getKeyChar()=='-')
+                    {
+                        if(operator.contains(cb))
+                        {
+                            res=res.substring(0,res.length()-1);
+                            //System.out.println(res);
+                            tf.setText(res);
+                        }
+                        else
+                        {
+                            res+='-';
+                            count++;
+                        }
+                        if(count==2)
+                        {
+                            res=calculation(res.substring(0,res.length()-1));
+                            tf.setText(res);
+                            count=1;
+                        }
+                    }
+                    if(e.getKeyChar()=='*')
+                    {
+                        if(operator.contains(cb))
+                        {
+                            res=res.substring(0,res.length()-1);
+                            //System.out.println(res);
+                            tf.setText(res);
+                        }
+                        else
+                        {
+                            res+='*';
+                            count++;
+                        }
+                        if(count==2)
+                        {
+                            res=calculation(res.substring(0,res.length()-1));
+                            tf.setText(res);
+                            count=1;
+                        }
+                    }
+                    if(e.getKeyChar()=='/')
+                    {
+                        if(operator.contains(cb))
+                        {
+                            res=res.substring(0,res.length()-1);
+                            //System.out.println(res);
+                            tf.setText(res);
+                        }
+                        else
+                        {
+                            res+='/';
+                            count++;
+                        }
+                        if(count==2)
+                        {
+                            res=calculation(res.substring(0,res.length()-1));
+                            tf.setText(res);
+                            count=1;
+                        }
+                    }
+                    if(e.getKeyChar()=='%')
+                    {
+                        if(operator.contains(cb))
+                        {
+                            res=res.substring(0,res.length()-1);
+                            //System.out.println(res);
+                            tf.setText(res);
+                        }
+                        else
+                        {
+                            res+='%';
+                            count++;
+                        }
+                        if(count==2)
+                        {
+                            res=calculation(res.substring(0,res.length()-1));
+                            tf.setText(res);
+                            count=1;
+                        }
+                    }
+                    if(e.getKeyChar()=='^')
+                    {
+                        if(operator.contains(cb))
+                        {
+                            res=res.substring(0,res.length()-1);
+                            //System.out.println(res);
+                            tf.setText(res);
+                        }
+                        else
+                        {
+                            res+='^';
+                            count++;
+                        }
+                        if(count==2)
+                        {
+                            char ch = res.charAt(res.length()-1);
+                            res=calculation(res.substring(0,res.length()-1));
+                            tf.setText(res);
+                            count=1;
+                        }
+                    }
+                }
+                res=tf.getText();
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                res= tf.getText();
+//                String cb="";
+//                if(!res.isEmpty())
+//                    cb = res.substring(res.length()-1);
+//                if(e.getKeyChar()=='+') {
+//                    count++;
+//                    if(operator.contains(cb)) {
+//                        res = res.substring(0, res.length() - 1) + "+";
+//                        tf.setText(res);
+//                        count--;
+//                    }
+//                    else
+//                        res += "+";
+//                    if(count==2)
+//                    {
+//                        String s = res.substring(0,res.length()-1);
+//                        res=calculation(s)+res.substring(res.length()-1);
+//                        tf.setText(res);
+//                        count--;
+//                    }
+//                }
+
+                if(e.getKeyChar()==KeyEvent.VK_ENTER)
+                {
+                    String cb = res.substring(res.length()-1);
+                    if(operateSym.contains(cb))
+                    {
+                        res=calculation(res.substring(0,res.length()-1));
+                        tf.setText(res);
+                        res="";
+                        clear = true;
+                    }
+                    if(!operateSym.contains(cb))
+                    {
+                        res=calculation(res);
+                        tf.setText(res);
+                        res="";
+                        clear=true;
+                    }
+                }
+                if(e.getKeyChar()==KeyEvent.VK_DELETE)
+                {
+                    count=0;
+                    tf.setText("");
+                    res="";
+
+                }
+                res=tf.getText();
+            }
+        });
+
+        jsqrt3 = new JButton("∛");
+        jsqrt3.setBounds(40,160,70,50);
+        jsqrt3.setFont(font);
+        jsqrt3.addActionListener(this);
+
+        jsqroot2 = new JButton("√");
+        jsqroot2.setBounds(130,160,70,50);
+        jsqroot2.setFont(font);
+        jsqroot2.addActionListener(this);
+
+        jper = new JButton("^");
+        jper.setBounds(220,160,70,50);
+        jper.setFont(font);
+        jper.addActionListener(this);
+
+        jclear = new JButton("CL");
+        jclear.setBounds(310,160,80,50);
+        jclear.setFont(font);
+        jclear.addActionListener(this);
+
+        jback = new JButton("⌫");
+        jback.setBounds(410,160,80,50);
+        jback.setFont(font);
+        jback.addActionListener(this);
+
+        jseven = new JButton("7");
+        jseven.setBounds(40,230,70,50);
+        jseven.setFont(font);
+        jseven.addActionListener(this);
+
+        jeight = new JButton("8");
+        jeight.setBounds(130,230,70,50);
+        jeight.setFont(font);
+        jeight.addActionListener(this);
+
+        jnine = new JButton("9");
+        jnine.setBounds(220,230,70,50);
+        jnine.setFont(font);
+        jnine.addActionListener(this);
+
+        jsquare3 = new JButton("^3");
+        jsquare3.setBounds(310,230,80,50);
+        jsquare3.setFont(font);
+        jsquare3.addActionListener(this);
+
+        jdiv = new JButton("÷");
+        jdiv.setBounds(410,230,80,50);
+        jdiv.setFont(font);
+        jdiv.addActionListener(this);
+
+        jfour = new JButton("4");
+        jfour.setBounds(40,300,70,50);
+        jfour.setFont(font);
+        jfour.addActionListener(this);
+
+        jfive = new JButton("5");
+        jfive.setBounds(130,300,70,50);
+        jfive.setFont(font);
+        jfive.addActionListener(this);
+
+        jsix = new JButton("6");
+        jsix.setBounds(220,300,70,50);
+        jsix.setFont(font);
+        jsix.addActionListener(this);
+
+        jsquar2 = new JButton("^2");
+        jsquar2.setBounds(310,300,80,50);
+        jsquar2.setFont(font);
+        jsquar2.addActionListener(this);
+
+        jmul = new JButton("*");
+        jmul.setBounds(410,300,80,50);
+        jmul.setFont(font);
+        jmul.addActionListener(this);
+
+        jone = new JButton("1");
+        jone.setBounds(40,370,70,50);
+        jone.setFont(font);
+        jone.addActionListener(this);
+
+        jtwo = new JButton("2");
+        jtwo.setBounds(130,370,70,50);
+        jtwo.setFont(font);
+        jtwo.addActionListener(this);
+
+        jthree = new JButton("3");
+        jthree.setBounds(220,370,70,50);
+        jthree.setFont(font);
+        jthree.addActionListener(this);
+
+        jminus = new JButton("-");
+        jminus.setBounds(310,370,80,50);
+        jminus.setFont(font);
+        jminus.addActionListener(this);
+
+        jplus = new JButton("+");
+        jplus.setBounds(410,370,80,50);
+        jplus.setFont(font);
+        jplus.addActionListener(this);
+
+        jdoublezero = new JButton("00");
+        jdoublezero.setBounds(40,440,70,50);
+        jdoublezero.setFont(font);
+        jdoublezero.addActionListener(this);
+
+        jzero = new JButton("0");
+        jzero.setBounds(130,440,70,50);
+        jzero.setFont(font);
+        jzero.addActionListener(this);
+
+        jrem = new JButton("%");
+        jrem.setBounds(220,440,70,50);
+        jrem.setFont(font);
+        jrem.addActionListener(this);
+
+        jdot = new JButton(".");
+        jdot.setBounds(310,440,80,50);
+        jdot.setFont(font);
+        jdot.addActionListener(this);
+
+        jequal = new JButton("=");
+        jequal.setBounds(410,440,80,50);
+        jequal.setFont(font);
+        jequal.addActionListener(this);
+
+
+
+        jf.add(jone);
+        jf.add(jtwo);
+        jf.add(jthree);
+        jf.add(jfour);
+        jf.add(jfive);
+        jf.add(jsix);
+        jf.add(jseven);
+        jf.add(jeight);
+        jf.add(jnine);
+        jf.add(jzero);
+        jf.add(jdoublezero);
+        jf.add(jdot);
+        jf.add(jplus);
+        jf.add(jminus);
+        jf.add(jmul);
+        jf.add(jdiv);
+        jf.add(jrem);
+        jf.add(jper);
+        jf.add(jequal);
+        jf.add(jclear);
+        jf.add(jback);
+        jf.add(jsquar2);
+        jf.add(jsquare3);
+        jf.add(jsqroot2);
+        jf.add(jsqrt3);
+
+
+        jf.setVisible(true);
+    }
+    public void actionPerformed(ActionEvent ae)
+    {
+        if(clear && !(ae.getActionCommand().equals("+")||ae.getActionCommand().equals("-")||ae.getActionCommand().equals("*")||ae.getActionCommand().equals("/")||ae.getActionCommand().equals("%")||ae.getActionCommand().equals("^")||ae.getActionCommand().equals("^2")||ae.getActionCommand().equals("^3")))
+        {
+            //count=0;
+            res="";
+            tf.setText(res);
+            clear =false;
+        }
+        else
+            clear = false;
+
+        if(ae.getActionCommand().equals("1"))
+        {
+            res+="1";
+            tf.setText(res);
+        }
+        if(ae.getActionCommand().equals("2"))
+        {
+            res+="2";
+            tf.setText(res);
+        }
+        if(ae.getActionCommand().equals("3"))
+        {
+            res+="3";
+            tf.setText(res);
+        }
+        if (ae.getActionCommand() .equals("4")) {
+            res += "4";
+            tf.setText(res);
+        }
+        if (ae.getActionCommand().equals("5")) {
+            res += "5";
+            tf.setText(res);
+        }
+        if(ae.getActionCommand().equals("6"))
+        {
+            res+="6";
+            tf.setText(res);
+        }
+        if(ae.getActionCommand().equals("7"))
+        {
+            res+="7";
+            tf.setText(res);
+        }
+        if(ae.getActionCommand().equals("8"))
+        {
+            res+="8";
+            tf.setText(res);
+        }
+        if(ae.getActionCommand().equals("9"))
+        {
+            res+="9";
+            tf.setText(res);
+        }
+        if(ae.getActionCommand().equals("0"))
+        {
+            res+="0";
+            tf.setText(res);
+        }
+        if(ae.getActionCommand().equals("."))
+        {
+            res+=".";
+            tf.setText(res);
+        }
+        if(operator.contains(ae.getActionCommand()))
+        {
+//            if(clear && !(ae.getActionCommand().equals("+")||ae.getActionCommand().equals("-")||ae.getActionCommand().equals("*")||ae.getActionCommand().equals("/")||ae.getActionCommand().equals("%")||ae.getActionCommand().equals("^")||ae.getActionCommand().equals("^2")||ae.getActionCommand().equals("^3")))
+//            {
+//                //count=0;
+//                res="";
+//                tf.setText(res);
+//                clear =false;
+//            }
+//            else
+//                clear = false;
+            count++;
+            System.out.println("Button");
+            if (ae.getActionCommand().equals("+")) {
+                int len1 = res.length()-1;
+                String com=String.valueOf(res.charAt(len1));
+                if(operateSym.contains(com)) {
+                    res = res.substring(0, len1) + "+";
+                    count-=1;
+                }
+                else
+                    res += "+";
+                //count++;
+                int len = res.length();
+                String s = "";
+                String set = res;
+                tf.setText(res);
+                if (count == 2) {
+                    s = res.substring(0, len - 1);
+                    res = calculation(s) + set.substring(len - 1);
+                    //System.out.print("Count"+count);
+                    count = 1;
+                }
+                tf.setText(res);
+            }
+            if (ae.getActionCommand().equals("-")) {
+                int len1 = res.length()-1;
+                String com=String.valueOf(res.charAt(len1));
+                if(operateSym.contains(com)) {
+                    res = res.substring(0, len1) + "-";
+                    count--;
+                }
+                else
+                    res += "-";
+                //count++;
+                int len = res.length();
+                String s = "";
+                String set = res;
+                tf.setText(res);
+                if (count == 2) {
+                    s = res.substring(0, len - 1);
+                    res = calculation(s) + set.substring(len - 1);
+                    //System.out.print("Count"+count);
+                    count = 1;
+                }
+                tf.setText(res);
+            }
+            if (ae.getActionCommand().equals("*")) {
+                int len1 = res.length()-1;
+                String com=String.valueOf(res.charAt(len1));
+                if(operateSym.contains(com)) {
+                    res = res.substring(0, len1) + "*";
+                    count--;
+                }
+                else
+                    res += "*";
+                //count++;
+                int len = res.length();
+                String s = "";
+                String set = res;
+                tf.setText(res);
+                if (count == 2) {
+                    s = res.substring(0, len - 1);
+                    res = calculation(s) + set.substring(len - 1);
+                    //System.out.print("Count"+count);
+                    count = 1;
+                }
+                tf.setText(res);
+            }
+            if (ae.getActionCommand().equals("÷")) {
+                int len1 = res.length()-1;
+                String com=String.valueOf(res.charAt(len1));
+                if(operateSym.contains(com)) {
+                    res = res.substring(0, len1) + "/";
+                    count--;
+                }
+                else
+                    res += "/";
+                //count++;
+                int len = res.length();
+                String s = "";
+                String set = res;
+                tf.setText(res);
+                if (count == 2) {
+                    s = res.substring(0, len - 1);
+                    res = calculation(s) + set.substring(len - 1);
+                    //System.out.print("Count"+count);
+                    count = 1;
+                }
+                tf.setText(res);
+            }
+            if (ae.getActionCommand().equals("%")) {
+                int len1 = res.length()-1;
+                String com=String.valueOf(res.charAt(len1));
+                if(operateSym.contains(com)) {
+                    res = res.substring(0, len1) + "%";
+                    count--;
+                }
+                else
+                    res += "%";
+                //count++;
+                int len = res.length();
+                String s = "";
+                String set = res;
+                tf.setText(res);
+                if (count == 2) {
+                    s = res.substring(0, len - 1);
+                    res = calculation(s) + set.substring(len - 1);
+                    //System.out.print("Count"+count);
+                    count = 1;
+                }
+                tf.setText(res);
+            }
+            if(ae.getActionCommand().equals("^2"))
+            {
+                int len1 = res.length()-1;
+                String com2 =res.substring(len1);
+                if(len1>1) {
+                    String com1 = res.substring(len1);
+                    String com = res.substring(len1 - 1);
+                    if (operateSym.contains(com)) {
+                        res = res.substring(0, len1 - 1) + "^2";
+                        count--;
+                    }
+                    else if(operateSym.contains(com1))
+                    {
+                        res=res.substring(0,len1)+"^2";
+                        count--;
+                    }
+                    else
+                        res += "^2";
+                }
+                else if(operateSym.contains(com2))
+                {
+                    res=res.substring(0,len1)+"^2";
+                    count--;
+                }
+                else
+                    res += "^2";
+                //count++;
+                System.out.println(res);
+                int len = res.length();
+                String s = "";
+                String set = res;
+                tf.setText(res);
+                if (count == 2) {
+                    s = res.substring(0, len - 2);
+                    res = calculation(s) + set.substring(len - 2);
+                    //System.out.print("Count"+count);
+                    count = 1;
+                }
+                tf.setText(res);
+            }
+            if(ae.getActionCommand().equals("^3"))
+            {
+                int len1 = res.length()-1;
+                if(len1>1) {
+                    String com = res.substring(len1 - 1);
+                    if (operateSym.contains(com)) {
+                        res = res.substring(0, len1 - 1) + "^3";
+                        count--;
+                    }
+                    else
+                        res += "^3";
+                }
+                else
+                    res += "^3";
+                //count++;
+                System.out.println(res);
+                int len = res.length();
+                String s = "";
+                String set = res;
+                tf.setText(res);
+                if (count == 2) {
+                    s = res.substring(0, len - 2);
+                    res = calculation(s) + set.substring(len - 2);
+                    //System.out.print("Count"+count);
+                    count = 1;
+                }
+                tf.setText(res);
+            }
+            if (ae.getActionCommand().equals("^")) {
+                int len1 = res.length()-1;
+                String com=String.valueOf(res.charAt(len1));
+                System.out.println(count);
+                if(operateSym.contains(com)) {
+                    res = res.substring(0, len1) + "^";
+                    count--;
+                }
+                else
+                    res += "^";
+                //count++;
+                int len = res.length();
+                String s = "";
+                String set = res;
+                tf.setText(res);
+                if (count == 2) {
+                    s = res.substring(0, len - 1);
+                    res = calculation(s) + set.substring(len - 1);
+                    //System.out.print("Count"+count);
+                    count = 1;
+                }
+                System.out.println(res);
+                tf.setText(res);
+            }
+            if(ae.getActionCommand().equals("⌫"))
+            {
+                int len1= res.length()-1;
+                if(len1<1) {
+                    res = "";
+                    count=0;
+                }
+                else {
+                    String s = "" + res.charAt(len1);
+                    if (operateSym.contains(s)) {
+                        if(count<=2)
+                            count=0;
+                        else
+                            count=count-2;
+                    }
+                }
+                System.out.println(count);
+                res=res.substring(0,len1);
+                tf.setText(res);
+            }
+            if(ae.getActionCommand().equals("√"))
+            {
+                count--;
+                res = setting(res,"√");
+                tf.setText(res);
+            }
+            if(ae.getActionCommand().equals("∛"))
+            {
+                count--;
+                res = setting(res,"∛");
+                tf.setText(res);
+            }
+            if(ae.getActionCommand().equals("="))
+            {
+                System.out.println(count);
+                System.out.println(res);
+                if(count==1 && res.contains("∛"))
+                {
+                    res=res.replace("∛","");
+                    double db = Double.parseDouble(res);
+                    db=Math.cbrt(db);
+                    if((int)db==db) {
+                        res = String.valueOf((int) db);
+                        System.out.println(res);
+                        res=calculation(res);
+                    }
+                    else {
+                        res = String.valueOf(db);
+                        System.out.println(res);
+                        res=calculation(res);
+                    }
+                }
+                else if(count==1 && res.contains("√"))
+                {
+                    res=res.replace("√","");
+                    double db = Double.parseDouble(res);
+                    db=Math.sqrt(db);
+                    if((int)db==db) {
+                        res = String.valueOf((int) db);
+                        System.out.println(res);
+                        res=calculation(res);
+                    }
+                    else {
+                        res = String.valueOf(db);
+                        System.out.println(res);
+                        res=calculation(res);
+                    }
+                }
+                else if(count==1)
+                    res=calculation(res.substring(0,res.length()-1));
+                else
+                    res=calculation(res);
+                tf.setText(res);
+                count=0;
+                clear = true;
+            }
+        }
+        if(ae.getActionCommand().equals("00"))
+        {
+            res+="00";
+            tf.setText(res);
+        }
+        if(ae.getActionCommand().equals("CL"))
+        {
+            res="";
+            count=0;
+            tf.setText(res);
+        }
+    }
+    public String setting(String s1,String s2)
+    {
+        String s="+-*/^%";
+        String res="";
+        int ind=0;
+        boolean b =false;
+        for(int i=0;i<s1.length();i++)
+        {
+            char ch = s1.charAt(i);
+            if(s.indexOf(ch)!=-1)
+            {
+                ind =i;
+                b=true;
+            }
+        }
+        if(b)
+            res+=s1.substring(0,ind+1)+s2+s1.substring(ind+1);
+        else
+            res+=s2+s1;
+        return res;
+    }
+    public String calculation(String s)
+    {
+        String Oper="";
+        String operation="";
+        double fina=0;
+        System.out.println("Calculation");
+        if(s.contains("+")) operation="\\+";
+        else if(s.contains("*")) operation="\\*";
+        else if(s.contains("/")) operation="/";
+        else if(s.contains("%")) operation="%";
+        else if(s.contains("^")) operation="\\^";
+        else if(s.contains("-")) operation="-";
+        else return s;
+        String[] arr = s.split(operation);
+        if(arr[0].contains("√"))
+        {
+            arr[0]=arr[0].replace("√","");
+            double db = Double.parseDouble(arr[0]);
+            arr[0]=String.valueOf(Math.sqrt(db));
+        }
+        if(arr[1].contains("√"))
+        {
+            arr[1]=arr[1].replace("√","");
+            double db = Double.parseDouble(arr[1]);
+            arr[1]=String.valueOf(Math.sqrt(db));
+        }
+        if(arr[0].contains("∛"))
+        {
+            arr[0]=arr[0].replace("∛","");
+            double db = Double.parseDouble(arr[0]);
+            arr[0]=String.valueOf(Math.cbrt(db));
+        }
+        if(arr[1].contains("∛"))
+        {
+            arr[1]=arr[1].replace("∛","");
+            double db = Double.parseDouble(arr[1]);
+            arr[1]=String.valueOf(Math.cbrt(db));
+        }
+        double a = Double.parseDouble(arr[0]);
+        double b = Double.parseDouble(arr[1]);
+        switch(operation)
+        {
+            case "\\+":
+                fina = a+b;
+                break;
+            case "-":
+                fina = a-b;
+                break;
+            case "\\*":
+                fina = a*b;
+                break;
+            case "/":
+                if(b!=0)
+                    fina=a/b;
+                else
+                    return "Error";
+                break;
+            case "%":
+                fina=a%b;
+                break;
+            case "\\^":
+                fina=Math.pow(a,b);
+                break;
+            default:
+                //fina = a+b;
+        }
+//            double sum = a + b;
+        if (fina == (int) fina)
+            Oper =String.valueOf((int) fina);
+        else
+            Oper= String.valueOf(fina);
+//      }
+        return Oper;
+    }
+    public static void main(String[] ar)
+    {
+        new FrameProBasicCalculator();
+    }
+}
